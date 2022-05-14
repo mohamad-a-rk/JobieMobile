@@ -1,4 +1,6 @@
 import React from "react";
+import * as Linking from 'expo-linking';
+
 import {
   View,
   StyleSheet,
@@ -31,7 +33,6 @@ function ListingDetailsScreen({ route, navigation }) {
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
         >
 
-
           <Text style={styles.title}>{listing.title}</Text>
           <View style={{ flexDirection: "row-reverse" }}>
             <Text style={styles.date}>Due to {new Date(listing.deadline).toDateString()}</Text>
@@ -42,12 +43,12 @@ function ListingDetailsScreen({ route, navigation }) {
             {listing.description}
           </Text>
           <ListItemSeparator />
-          {listing.requrements && <View>
-            <Text style={styles.title}>Requrements</Text>
-            {listing.requrements.map((s, index) =>
+          {listing.requirements && listing.requirements.length != 0 && <View>
+            <Text style={styles.title}>Requirements</Text>
+            {listing.requirements.map((s, index) =>
               <Text style={style.text} key={index}> {"- " + s} </Text>)}
           </View>}
-          {listing.requrements && <ListItemSeparator />}
+          {listing.requirements && listing.requirements.length != 0 && <ListItemSeparator />}
           {listing.details && <View>
             <Text style={styles.title}>More Details</Text>
             {Object.keys(listing.details).map((detail, index) =>
@@ -56,6 +57,11 @@ function ListingDetailsScreen({ route, navigation }) {
                 <Text style={style.text}> {listing.details[detail]} </Text>
               </View>)}
           </View>}
+          <Text style={styles.title}>Contact info</Text>
+          <View>
+            <Text onPress={() => Linking.openURL("tel: " + listing.phone)}>Phone: {listing.phone} </Text>
+            <Text onPress={() => Linking.openURL("mailto: " + listing.email)}>Email:  {listing.email} </Text>
+          </View>
           <View style={styles.userContainer}>
             <ListItem
               title={listing.owner.name}
@@ -65,7 +71,7 @@ function ListingDetailsScreen({ route, navigation }) {
 
             />
           </View>
-          {user.email && user.userType !== "Business" && <ApplyForm listing={listing} user={user} />}
+          {user.email && user.userType !== "Business" && <ApplyForm listing={listing} user={user} onPress={() => navigation.navigate(routes.LISTING)} />}
           {!user.email && user.userType !== "Business" &&
             <AppButton
               title="Apply now !"

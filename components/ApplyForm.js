@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { Form, SubmitButton } from "./forms";
 import responseApi from "../api/responses";
 
-function ApplyForm({ listing, user }) {
+function ApplyForm({ listing, user, onPress }) {
   const handleSubmit = async ({ response }, { resetForm }) => {
     Keyboard.dismiss();
     response = {
@@ -21,9 +21,10 @@ function ApplyForm({ listing, user }) {
       console.log("Error", result);
       return Alert.alert("Error", "Could not send the message to the seller.");
     }
-
     resetForm();
 
+    Alert.alert("Awesome!", "Your response has been received.");
+    onPress()
     Notifications.presentLocalNotificationAsync({
       title: "Awesome!",
       body: "Your response has been received.",

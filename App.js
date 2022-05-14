@@ -1,12 +1,6 @@
 import AppLoading from 'expo-app-loading';
-import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-// import ListingDetailsScreen from './screens/ListingDetailsScreen';
-// import ListingsScreen from './screens/ListingsScreen';
-// import LoginScreen from './screens/LoginScreen';
-// import RegisterScreen from './screens/RegisterScreen';
-// import WelcomeScreen from './screens/WelcomeScreen';
+import OfflineNotice from "./components/OfflineNotice";
 import { NavigationContainer } from "@react-navigation/native";
 import { navigationRef } from "./navigation/rootNavigation";
 import navigationTheme from "./navigation/navigationTheme";
@@ -14,8 +8,6 @@ import AuthNavigator from "./navigation/AuthNavigator";
 import AppNavigator from './navigation/AppNavigator';
 import AuthContext from './auth/context';
 import authStorage from "./auth/storage";
-import ApplyFormScreen from './screens/ApplyFormScreen';
-
 
 
 export default function App() {
@@ -35,7 +27,7 @@ export default function App() {
   else
     return (
       <AuthContext.Provider value={{ user, setUser }}>
-        {/* <OfflineNotice /> */}
+        <OfflineNotice />
         <NavigationContainer ref={navigationRef} theme={navigationTheme}>
           {user ? <AppNavigator /> : <AuthNavigator />}
         </NavigationContainer>

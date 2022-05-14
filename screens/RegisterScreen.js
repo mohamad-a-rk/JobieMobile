@@ -67,7 +67,7 @@ function RegisterScreen() {
 
   return (
     <>
-      {/* <ActivityIndicator visible={registerApi.loading || loginApi.loading} /> */}
+      <ActivityIndicator visible={registerApi.loading || loginApi.loading} />
       <Screen style={styles.container}>
         <Form
           initialValues={{ name: "", email: "", password: "", gender: "", userType: "" }}

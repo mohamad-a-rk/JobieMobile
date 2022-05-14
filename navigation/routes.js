@@ -6,7 +6,9 @@ export default Object.freeze({
   MESSAGES: "Messages",
   REGISTER: "Register",
   APPLY: "ApplyForm",
-  MY_FORMS: "myForms",
-  MY_RESPONSES: "myResponses",
-  FORM_DETAIL: "myForm"
+  MY_FORMS: "My Forms",
+  MY_RESPONSES: "My Responses",
+  FORM_DETAIL: "Form Details",
+  RESPONSE_DETAILS: "Response Details"
+
 });

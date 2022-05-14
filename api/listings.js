@@ -6,6 +6,10 @@ const getListings = () => client.get(endpoint);
 
 const getMyForms = (id) => client.get(endpoint + "?owner=" + id)
 
+const deleteMyForm = (id) => client.delete(endpoint + "/" + id)
+
+const getForm = (id) => client.get(endpoint + "/" + id)
+
 export const addListing = (listing, onUploadProgress) => {
   const data = new FormData();
   data.append("title", listing.title);
@@ -32,6 +36,8 @@ export const addListing = (listing, onUploadProgress) => {
 
 export default {
   addListing,
+  deleteMyForm,
+  getForm,
   getListings,
   getMyForms
 };
