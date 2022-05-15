@@ -4,9 +4,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import AccountNavigator from "./AccountNavigator";
 import FeedNavigator from "./FeedNavigator";
-// import ListingEditScreen from "../screens/ListingEditScreen";
-// import NewListingButton from "./NewListingButton";
-// import routes from "./routes";
+import AddFormScreen from "../screens/AddFormScreen"
+import NewListingButton from "./NewFormButton";
+import routes from "./routes";
+import useAuth from "../auth/useAuth";
 // import navigation from "./rootNavigation";
 // import useNotifications from "../hooks/useNotifications";
 
@@ -14,6 +15,7 @@ const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => {
   // useNotifications();
+  const { user } = useAuth()
 
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
@@ -26,24 +28,26 @@ const AppNavigator = () => {
           ),
         }}
       />
-      {/* <Tab.Screen
-        name="ListingEdit"
-        component={ListingEditScreen}
+      <Tab.Screen
+        name="Add Form Screen"
+        component={AddFormScreen}
         options={({ navigation }) => ({
           tabBarButton: () => (
             <NewListingButton
-              onPress={() => navigation.navigate(routes.LISTING_EDIT)}
+              onPress={() => { user.userType === "Business" ? navigation.navigate(routes.ADD_FORM_SCREEN) : console.log("Hi") }}
+              name={user.userType === "Business" ? "plus-circle" : "account-search"}
+
             />
           ),
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
-              name="plus-circle"
+              name="plus"
               color={color}
               size={size}
             />
           ),
         })}
-      /> */}
+      />
       <Tab.Screen
         name="Account"
         component={AccountNavigator}

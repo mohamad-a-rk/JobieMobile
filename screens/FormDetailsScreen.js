@@ -70,7 +70,8 @@ function FormDetailsScreen({ route, navigation }) {
           >
             <View style={{ flexDirection: "row" }}>
               <Text style={[styles.title, { marginRight: 10 }]}>{listing.title}</Text>
-              <TouchableOpacity style={{ padding: 5, marginRight: 10 }}>
+              <TouchableOpacity style={{ padding: 5, marginRight: 10 }} onPress={() => navigation.navigate(routes.EDIT_FORM, listing)
+              }>
                 <MaterialCommunityIcons name="pencil" color={colors.primary} size={25} />
               </TouchableOpacity>
               <TouchableOpacity style={{ padding: 5, marginRight: 10 }} onPress={handleDelete}>
@@ -119,7 +120,6 @@ function FormDetailsScreen({ route, navigation }) {
 
             <AppButton title={"Submitters " + listing.submitters}
               onPress={() => navigation.navigate(routes.MY_RESPONSES, listing)}
-            // onPress={() => console.log(listing)}
             />
 
           </KeyboardAvoidingView>

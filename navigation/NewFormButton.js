@@ -4,12 +4,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import colors from "../config/colors";
 
-function NewListingButton({ onPress }) {
+function NewFormButton({ name, onPress }) {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
         <MaterialCommunityIcons
-          name="plus-circle"
+          name={name}
           color={colors.white}
           size={40}
         />
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewListingButton;
+export default NewFormButton;

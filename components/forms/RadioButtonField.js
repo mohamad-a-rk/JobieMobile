@@ -7,7 +7,8 @@ import defaultStyles from '../../config/styles'
 import { useFormikContext } from 'formik';
 function RadioButtonField({ label, value, style }) {
     const {
-        setFieldValue
+        setFieldValue,
+        values
     } = useFormikContext();
     return (
         <View style={{ flexDirection: 'row', padding: 5 }}>

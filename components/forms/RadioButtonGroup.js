@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormikContext } from "formik";
 
 import ErrorMessage from "./ErrorMessage";
 import { StyleSheet, View } from "react-native";
 import { RadioButton } from 'react-native-paper';
-import AppText from '../Text'
 import defaultStyles from "../../config/styles";
 import HeaderText from "../HeaderText";
 
@@ -20,7 +19,7 @@ function RadioButtonGroup({ icon, name, label, width, children, onValueChange, s
             onValueChange(values[name])
         return handleChange(name)
     }
-
+    useEffect(() => handleChange, [])
     return (
         <>
             <View style={style}>

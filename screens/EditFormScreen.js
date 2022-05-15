@@ -24,6 +24,7 @@ import Icon from "../components/Icon";
 import PhoneField from "../components/forms/PhoneField";
 import CountryPicker from 'react-native-country-picker-modal';
 import listingsApi from "../api/listings"
+import routes from "../navigation/routes";
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
     description: Yup.string().label("Description"),
@@ -91,22 +92,37 @@ const categories = [
     },
 ];
 
-function AddFormScreen(navigation) {
+function EditFormScreen({ route, navigation }) {
+    const form = route.params
+    console.log(form)
     const [uploadVisible, setUploadVisible] = useState(false);
     const [progress, setProgress] = useState(0);
-    const [phoneNum, setPhoneNum] = useState({ type: "Phone" });
-    const [date, setDate] = useState(new Date());
+    const [phoneNum, setPhoneNum] = useState({ type: "Phone", number: form.phone });
+    const [date, setDate] = useState(new Date(form.deadline));
     const [show, setShow] = useState(false);
     const [showCountry, setShowCountry] = useState(false);
-    const [country, setCountry] = useState("");
-    const [requirements, setRequirements] = useState([""])
-    const [details, setDetails] = useState({ Detail: "Value" })
+    const [country, setCountry] = useState(form.location.country);
+    const [requirements, setRequirements] = useState(form.requirements ? form.requirements : {})
+    const [details, setDetails] = useState(form.details ? form.details : {})
 
     const handleSubmit = async (listing, { resetForm }) => {
+
         setProgress(0);
         setUploadVisible(true);
-        const result = await listingsApi.addForm(
-            { ...listing, deadline: date, country, requirements, details, phone: phoneNum.number },
+
+        listing = { ...listing, deadline: date, country, requirements, details, phone: phoneNum.number }
+        const obj = {
+            country: listing.country,
+            city: listing.city
+        }
+
+        delete listing.country
+        delete listing.city
+        listing.location = obj
+
+        const result = await listingsApi.editForm(
+            form,
+            listing,
             (progress) => setProgress(progress)
         );
 
@@ -121,6 +137,8 @@ function AddFormScreen(navigation) {
         setRequirements([""])
         setDetails({ Detail: "Value" })
         setPhoneNum({ type: "Phone", number: "" })
+        navigation.navigate(routes.MY_FORMS)
+
     };
 
 
@@ -142,12 +160,12 @@ function AddFormScreen(navigation) {
                 />
                 <Form
                     initialValues={{
-                        title: "",
-                        description: "",
-                        jobType: "",
-                        field: "",
-                        city: "",
-                        email: ""
+                        title: form.title,
+                        description: form.description,
+                        jobType: form.jobType,
+                        field: form.field,
+                        city: form.location.city,
+                        email: form.email
                     }}
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
@@ -228,7 +246,6 @@ function AddFormScreen(navigation) {
 
                         </TouchableWithoutFeedback>
                     </View>
-
 
 
                     {
@@ -321,7 +338,7 @@ function AddFormScreen(navigation) {
 
                     /> */}
 
-                    <SubmitButton title="Post" />
+                    <SubmitButton title="Edit" />
                 </Form>
                 {show && (
                     <DateTimePicker
@@ -354,4 +371,4 @@ const styles = StyleSheet.create({
 
     }
 });
-export default AddFormScreen;
+export default EditFormScreen;
