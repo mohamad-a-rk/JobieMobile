@@ -6,6 +6,7 @@ import ResponsesScreen from "../screens/ResponsesScreen";
 import ResponseDetailsScreen from "../screens/ResponseDetailsScreen";
 import FormDetailsScreen from "../screens/FormDetailsScreen";
 import EditFormScreen from "../screens/EditFormScreen";
+import ProfileScreen from "../screens/ProfileScreen"
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,7 @@ const AccountNavigator = () => (
     <Stack.Screen name="Response Details" component={ResponseDetailsScreen} />
     <Stack.Screen name="Form Details" component={FormDetailsScreen} />
     <Stack.Screen name="Edit Form" component={EditFormScreen} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
 
   </Stack.Navigator>
 );

@@ -11,6 +11,7 @@ export default Object.freeze({
   MY_RESPONSES: "My Responses",
   FORM_DETAIL: "Form Details",
   RESPONSE_DETAILS: "Response Details",
-  EDIT_FORM: "Edit Form"
+  EDIT_FORM: "Edit Form",
+  PROFILE: "Profile"
 
 });

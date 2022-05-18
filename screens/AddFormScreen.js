@@ -28,68 +28,136 @@ const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
     description: Yup.string().label("Description"),
     jobType: Yup.string().required().nullable().label("Job Type"),
-    field: Yup.string().required().nullable().label("Field"),
+    field: Yup.object().required().nullable().label("Field"),
     city: Yup.string().required().nullable().label("City"),
     email: Yup.string().required().nullable().label("Email").email(),
 
 });
-
+import CategoryPickerItem from "../components/CategoryPickerItem"
 const categories = [
     {
         backgroundColor: "#fc5c65",
-        icon: "floor-lamp",
-        label: "Furniture",
-        value: 1,
+        icon: "currency-eur",
+        label: "Accountancy, banking and finance",
+        value: "finance",
     },
     {
         backgroundColor: "#fd9644",
-        icon: "car",
-        label: "Cars",
-        value: 2,
+        icon: "finance",
+        label: "Business, consulting and management",
+        value: "business",
     },
     {
         backgroundColor: "#fed330",
-        icon: "camera",
-        label: "Cameras",
-        value: 3,
+        icon: "charity",
+        label: "Charity and voluntary work",
+        value: "charity",
     },
     {
         backgroundColor: "#26de81",
-        icon: "cards",
-        label: "Games",
-        value: 4,
+        icon: "draw",
+        label: "Creative arts and design",
+        value: "design",
     },
     {
         backgroundColor: "#2bcbba",
-        icon: "shoe-heel",
-        label: "Clothing",
-        value: 5,
+        icon: "lightning-bolt",
+        label: "Energy and utilities",
+        value: "energy",
     },
     {
         backgroundColor: "#45aaf2",
-        icon: "basketball",
-        label: "Sports",
-        value: 6,
+        icon: "factory",
+        label: "Engineering and manufacturing",
+        value: "engineering",
     },
     {
         backgroundColor: "#4b7bec",
-        icon: "headphones",
-        label: "Movies & Music",
-        value: 7,
+        icon: "leaf",
+        label: "Environment and agriculture",
+        value: "agriculture",
     },
     {
         backgroundColor: "#a55eea",
-        icon: "book-open-variant",
-        label: "Books",
-        value: 8,
+        icon: "hospital-box",
+        label: "Healthcare",
+        value: "healthcare",
     },
     {
         backgroundColor: "#778ca3",
-        icon: "application",
-        label: "Other",
-        value: 9,
+        icon: "party-popper",
+        label: "Hospitality and events management",
+        value: "hospitality",
+    }, ////////////
+    {
+        backgroundColor: "#fc5c65",
+        icon: "cursor-default",
+        label: "Information technology",
+        value: "it",
     },
+    {
+        backgroundColor: "#fd9644",
+        icon: "briefcase",
+        label: "Law",
+        value: "law",
+    },
+    {
+        backgroundColor: "#fed330",
+        icon: "police-badge",
+        label: "Law enforcement and security",
+        value: "security",
+    },
+    {
+        backgroundColor: "#26de81",
+        icon: "soccer",
+        label: "Leisure, sport and tourism",
+        value: "sport",
+    },
+    {
+        backgroundColor: "#2bcbba",
+        icon: "newspaper-variant-multiple",
+        label: "Marketing, advertising and PR",
+        value: "markiting",
+    },
+    {
+        backgroundColor: "#45aaf2",
+        icon: "television-classic",
+        label: "Media and internet",
+        value: "media",
+    },
+    {
+        backgroundColor: "#4b7bec",
+        icon: "office-building",
+        label: "Property and construction",
+        value: "construction",
+    },
+    {
+        backgroundColor: "#a55eea",
+        icon: "account-group",
+        label: "Public services and administration",
+        value: "services",
+    },
+    {
+        backgroundColor: "#778ca3",
+        icon: "truck",
+        label: "Transport and logistics",
+        value: "logistics",
+    },
+    {
+        backgroundColor: "#a55eea",
+        icon: "school",
+        label: "Teacher training and education",
+        value: "education",
+    },
+    {
+        backgroundColor: "#778ca3",
+        icon: "message-arrow-right",
+        label: "Other",
+        value: "other",
+    }
+
 ];
+
 
 function AddFormScreen(navigation) {
     const [uploadVisible, setUploadVisible] = useState(false);
@@ -105,6 +173,7 @@ function AddFormScreen(navigation) {
     const handleSubmit = async (listing, { resetForm }) => {
         setProgress(0);
         setUploadVisible(true);
+        listing.field = listing.field.value
         const result = await listingsApi.addForm(
             { ...listing, deadline: date, country, requirements, details, phone: phoneNum.number },
             (progress) => setProgress(progress)
@@ -180,11 +249,20 @@ function AddFormScreen(navigation) {
                             <RadioButtonField label={"Part Time"} value={"Part Time"} style={{ color: defaultStyles.colors.medium }} />
                         </View>
                     </RadioButtonGroup>
-                    <FormField
+                    {/* <FormField
                         maxLength={20}
                         name="field"
                         placeholder="Job Field"
+                    /> */}
+                    <Picker
+                        items={categories}
+                        name="field"
+                        numberOfColumns={3}
+                        PickerItemComponent={CategoryPickerItem}
+                        placeholder="Field"
+                        width="50%"
                     />
+
                     <HeaderText>
                         Location
                     </HeaderText>
@@ -310,16 +388,7 @@ function AddFormScreen(navigation) {
                         </>
 
                     </View>
-                    {/* 
-                    <Picker
-                        items={categories}
-                        name="category"
-                        numberOfColumns={3}
-                        PickerItemComponent={CategoryPickerItem}
-                        placeholder="Category"
-                        width="50%"
 
-                    /> */}
 
                     <SubmitButton title="Post" />
                 </Form>

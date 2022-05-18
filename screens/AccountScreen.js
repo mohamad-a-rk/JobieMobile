@@ -9,6 +9,7 @@ import Screen from "../components/Screen";
 import useAuth from "../auth/useAuth";
 import authApi from "../api/auth";
 import { ErrorMessage } from "../components/forms";
+import placeholders from "../config/placeholders";
 
 
 function AccountScreen({ navigation }) {
@@ -43,7 +44,8 @@ function AccountScreen({ navigation }) {
         <ListItem
           title={user.name}
           subTitle={user.email}
-          image={user.image ? user.image : "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI="}
+          image={user.image ? user.image : placeholders.profile_placeholder}
+          onPress={() => navigation.navigate(routes)}
         />
       </View>
       <View style={styles.container}>

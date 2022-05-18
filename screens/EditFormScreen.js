@@ -25,11 +25,13 @@ import PhoneField from "../components/forms/PhoneField";
 import CountryPicker from 'react-native-country-picker-modal';
 import listingsApi from "../api/listings"
 import routes from "../navigation/routes";
+import CategoryPickerItem from "../components/CategoryPickerItem"
+
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
     description: Yup.string().label("Description"),
     jobType: Yup.string().required().nullable().label("Job Type"),
-    field: Yup.string().required().nullable().label("Field"),
+    field: Yup.object().required().nullable().label("Field"),
     city: Yup.string().required().nullable().label("City"),
     email: Yup.string().required().nullable().label("Email").email(),
 
@@ -38,70 +40,136 @@ const validationSchema = Yup.object().shape({
 const categories = [
     {
         backgroundColor: "#fc5c65",
-        icon: "floor-lamp",
-        label: "Furniture",
-        value: 1,
+        icon: "currency-eur",
+        label: "Accountancy, banking and finance",
+        value: "finance",
     },
     {
         backgroundColor: "#fd9644",
-        icon: "car",
-        label: "Cars",
-        value: 2,
+        icon: "finance",
+        label: "Business, consulting and management",
+        value: "business",
     },
     {
         backgroundColor: "#fed330",
-        icon: "camera",
-        label: "Cameras",
-        value: 3,
+        icon: "charity",
+        label: "Charity and voluntary work",
+        value: "charity",
     },
     {
         backgroundColor: "#26de81",
-        icon: "cards",
-        label: "Games",
-        value: 4,
+        icon: "draw",
+        label: "Creative arts and design",
+        value: "design",
     },
     {
         backgroundColor: "#2bcbba",
-        icon: "shoe-heel",
-        label: "Clothing",
-        value: 5,
+        icon: "lightning-bolt",
+        label: "Energy and utilities",
+        value: "energy",
     },
     {
         backgroundColor: "#45aaf2",
-        icon: "basketball",
-        label: "Sports",
-        value: 6,
+        icon: "factory",
+        label: "Engineering and manufacturing",
+        value: "engineering",
     },
     {
         backgroundColor: "#4b7bec",
-        icon: "headphones",
-        label: "Movies & Music",
-        value: 7,
+        icon: "leaf",
+        label: "Environment and agriculture",
+        value: "agriculture",
     },
     {
         backgroundColor: "#a55eea",
-        icon: "book-open-variant",
-        label: "Books",
-        value: 8,
+        icon: "hospital-box",
+        label: "Healthcare",
+        value: "healthcare",
     },
     {
         backgroundColor: "#778ca3",
-        icon: "application",
-        label: "Other",
-        value: 9,
+        icon: "party-popper",
+        label: "Hospitality and events management",
+        value: "hospitality",
+    }, ////////////
+    {
+        backgroundColor: "#fc5c65",
+        icon: "cursor-default",
+        label: "Information technology",
+        value: "it",
     },
+    {
+        backgroundColor: "#fd9644",
+        icon: "briefcase",
+        label: "Law",
+        value: "law",
+    },
+    {
+        backgroundColor: "#fed330",
+        icon: "police-badge",
+        label: "Law enforcement and security",
+        value: "security",
+    },
+    {
+        backgroundColor: "#26de81",
+        icon: "soccer",
+        label: "Leisure, sport and tourism",
+        value: "sport",
+    },
+    {
+        backgroundColor: "#2bcbba",
+        icon: "newspaper-variant-multiple",
+        label: "Marketing, advertising and PR",
+        value: "markiting",
+    },
+    {
+        backgroundColor: "#45aaf2",
+        icon: "television-classic",
+        label: "Media and internet",
+        value: "media",
+    },
+    {
+        backgroundColor: "#4b7bec",
+        icon: "office-building",
+        label: "Property and construction",
+        value: "construction",
+    },
+    {
+        backgroundColor: "#a55eea",
+        icon: "account-group",
+        label: "Public services and administration",
+        value: "services",
+    },
+    {
+        backgroundColor: "#778ca3",
+        icon: "truck",
+        label: "Transport and logistics",
+        value: "logistics",
+    },
+    {
+        backgroundColor: "#a55eea",
+        icon: "school",
+        label: "Teacher training and education",
+        value: "education",
+    },
+    {
+        backgroundColor: "#778ca3",
+        icon: "message-arrow-right",
+        label: "Other",
+        value: "other",
+    }
+
 ];
 
 function EditFormScreen({ route, navigation }) {
     const form = route.params
-    console.log(form)
     const [uploadVisible, setUploadVisible] = useState(false);
     const [progress, setProgress] = useState(0);
     const [phoneNum, setPhoneNum] = useState({ type: "Phone", number: form.phone });
     const [date, setDate] = useState(new Date(form.deadline));
     const [show, setShow] = useState(false);
     const [showCountry, setShowCountry] = useState(false);
-    const [country, setCountry] = useState(form.location.country);
+    const [country, setCountry] = useState(form.location ? form.location.country : "");
     const [requirements, setRequirements] = useState(form.requirements ? form.requirements : {})
     const [details, setDetails] = useState(form.details ? form.details : {})
 
@@ -150,6 +218,26 @@ function EditFormScreen({ route, navigation }) {
     };
 
 
+    const findField = () => {
+        var field = null;
+        categories.forEach((item) => {
+            if (item.value === form.field) {
+                field = item
+                return
+            }
+            if (!field)
+                field =
+                {
+                    backgroundColor: "#fc5c65",
+                    icon: "curr",
+                    label: form.field,
+                    value: form.field,
+                }
+
+        })
+        return field
+    }
+
     return (
         <Screen style={styles.container}>
             <ScrollView>
@@ -163,8 +251,8 @@ function EditFormScreen({ route, navigation }) {
                         title: form.title,
                         description: form.description,
                         jobType: form.jobType,
-                        field: form.field,
-                        city: form.location.city,
+                        field: findField(),
+                        city: form.location ? form.location.city : "",
                         email: form.email
                     }}
                     onSubmit={handleSubmit}
@@ -198,11 +286,21 @@ function EditFormScreen({ route, navigation }) {
                             <RadioButtonField label={"Part Time"} value={"Part Time"} style={{ color: defaultStyles.colors.medium }} />
                         </View>
                     </RadioButtonGroup>
-                    <FormField
+                    {/* <FormField
                         maxLength={20}
                         name="field"
                         placeholder="Job Field"
+                    /> */}
+                    <Picker
+                        items={categories}
+                        name="field"
+                        numberOfColumns={3}
+                        PickerItemComponent={CategoryPickerItem}
+                        placeholder={form.field}
+                        width="50%"
+
                     />
+
                     <HeaderText>
                         Location
                     </HeaderText>
@@ -228,7 +326,6 @@ function EditFormScreen({ route, navigation }) {
                         </HeaderText>
                         <TouchableWithoutFeedback onPress={() => {
                             setRequirements([...requirements, ""])
-                            console.log(requirements)
                         }}>
                             <View style={{ marginHorizontal: 10 }}>
                                 <Icon name={"plus"} backgroundColor={colors.primary} iconColor={colors.light} />
@@ -266,7 +363,6 @@ function EditFormScreen({ route, navigation }) {
                         <TouchableWithoutFeedback onPress={() => {
 
                             setDetails({ ...details, ...{ Detail: "Value" } })
-                            console.log(details)
                         }}>
                             <View style={{ marginHorizontal: 10 }}>
                                 <Icon name={"plus"} backgroundColor={colors.primary} iconColor={colors.light} />
@@ -292,7 +388,6 @@ function EditFormScreen({ route, navigation }) {
                                     details[text] = details[detail]
                                     delete details[detail]
                                     setDetails({ ...details })
-                                    console.log(details)
                                 }}>
                                     {detail}
                                 </AppTextInput>
@@ -327,16 +422,6 @@ function EditFormScreen({ route, navigation }) {
                         </>
 
                     </View>
-                    {/* 
-                    <Picker
-                        items={categories}
-                        name="category"
-                        numberOfColumns={3}
-                        PickerItemComponent={CategoryPickerItem}
-                        placeholder="Category"
-                        width="50%"
-
-                    /> */}
 
                     <SubmitButton title="Edit" />
                 </Form>
