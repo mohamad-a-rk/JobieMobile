@@ -21,5 +21,9 @@ export default useAuth = () => {
     authStorage.removeToken();
   };
 
-  return { user, logIn, logOut, withOutLog };
+  const refreshUser = (data) => {
+    setUser(data)
+  }
+
+  return { refreshUser, user, logIn, logOut, withOutLog };
 };

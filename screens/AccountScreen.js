@@ -26,12 +26,12 @@ function AccountScreen({ navigation }) {
       targetScreen: user.userType === "Business" ? routes.MY_FORMS : routes.MY_RESPONSES,
     },
     {
-      title: "My Messages",
+      title: "Settings",
       icon: {
-        name: "email",
+        name: "account-settings",
         backgroundColor: colors.secondary,
       },
-      targetScreen: routes.MESSAGES,
+      targetScreen: routes.PROFILE_SETTINGS,
     },
   ];
   return (
@@ -45,28 +45,29 @@ function AccountScreen({ navigation }) {
           title={user.name}
           subTitle={user.email}
           image={user.image ? user.image : placeholders.profile_placeholder}
-          onPress={() => navigation.navigate(routes)}
+          onPress={() => navigation.navigate(routes.PROFILE, { _id: user._id })}
         />
       </View>
-      <View style={styles.container}>
-        <FlatList
-          data={menuItems}
-          keyExtractor={(menuItem) => menuItem.title}
-          ItemSeparatorComponent={ListItemSeparator}
-          renderItem={({ item }) => (
-            <ListItem
-              title={item.title}
-              IconComponent={
-                <Icon
-                  name={item.icon.name}
-                  backgroundColor={item.icon.backgroundColor}
-                />
-              }
-              onPress={() => navigation.navigate(item.targetScreen)}
-            />
-          )}
-        />
-      </View>
+      {user.email &&
+        <View style={styles.container}>
+          <FlatList
+            data={menuItems}
+            keyExtractor={(menuItem) => menuItem.title}
+            ItemSeparatorComponent={ListItemSeparator}
+            renderItem={({ item }) => (
+              <ListItem
+                title={item.title}
+                IconComponent={
+                  <Icon
+                    name={item.icon.name}
+                    backgroundColor={item.icon.backgroundColor}
+                  />
+                }
+                onPress={() => navigation.navigate(item.targetScreen)}
+              />
+            )}
+          />
+        </View>}
       <ListItem
         title="Log Out"
         IconComponent={<Icon name="logout" backgroundColor="#ffe66d" />}

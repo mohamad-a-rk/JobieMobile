@@ -10,6 +10,7 @@ import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
+import placeholders from "../config/placeholders";
 
 
 function ListingsScreen({ navigation }) {
@@ -36,7 +37,7 @@ function ListingsScreen({ navigation }) {
             <Card
               title={item.title}
               subTitle={(item.owner ? item.owner.name : "Some business ") + " offers a " + (item.jobType ? item.jobType : "job ") + " job at " + (item.location ? item.location.city : "some place")}
-              imageUrl={item.owner.image ? item.owner.image : "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI="}
+              imageUrl={item.owner.image ? item.owner.image : placeholders.profile_placeholder}
               onPress={() => {
                 console.log(item)
                 navigation.navigate(routes.LISTING_DETAILS, item)

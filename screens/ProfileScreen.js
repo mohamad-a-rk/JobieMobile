@@ -9,50 +9,29 @@ import { Rating } from 'react-native-ratings';
 import { Image } from "react-native-expo-image-cache";
 import useAuth from "../auth/useAuth"
 import useApi from '../hooks/useApi';
-import { getUser } from "../api/users"
+import usersApi from "../api/users"
 import placeholders from '../config/placeholders';
 
 
 
 function ProfileScreen({ route, navigation }) {
-    // const phones = [{ _id: 1, phoneNum: { type: "House", number: "+970597600519" } }]
-    // const skills = ["Hi", "Hello", "Yes", "No", "Hi", "Hello", "Yes", "No", "Hi", "Hello", "Yes", "No",]
-    // const feedbacks = [{ _id: "1", feedbacker: { name: "Mohammad" }, Text: "Good to know you :) ", rate: 4 },
-    // { _id: "2", feedbacker: { name: "Mohammad2" }, Text: "Good to know you :) ", rate: 4 },
-    // { _id: "3", feedbacker: { name: "Mohammad3" }, Text: "Good to know you :) ", rate: 4 }
-    // ]
-    // const prevJob = [{
-    //     job: {
-    //         "companyName": "Company1",
-    //         "duration": {
-    //             "start": new Date("2022-04-18T14:56:52.396Z"),
-    //             "end": new Date("2022-05-27T14:56:52.396Z")
-    //         },
-    //         "location": {
-    //             "city": "Nablus",
-    //             "country": "Palestine"
-    //         },
-    //         "position": "HR"
-    //     }, _id: 1
-    // }]
-    const getProfile = useApi(getUser);
+    const getProfile = useApi(usersApi.getUser);
 
     const { user } = useAuth()
     const [pageUser, setUser] = useState({})
     useEffect(() => {
-        if (route.params._id == user._id)
+        if (route.params._id === user._id)
             return setUser(user)
 
-        getProfile.request().then((v) => {
-            setUser(v)
-        }).catch(() => {
+        const a = ['a', 'b', 'c']
 
+        getProfile.request(route.params._id).then((v) => {
+            setUser(v.data)
+
+        }).catch((r) => {
+            console.log("Error:", r)
         })
-
-
-
-
-    }, [])
+    }, [route.params._id])
 
     return (
         <Screen>
@@ -66,122 +45,128 @@ function ProfileScreen({ route, navigation }) {
                         <View style={styles.profileImage}>
                             <Image uri={placeholders.profile_placeholder} style={styles.image} resizeMode="center"></Image>
                         </View>
-                        <TouchableWithoutFeedback onPress={() => console.log("Hi")}>
-                            <View style={styles.add}>
-                                <Ionicons name="ios-add" size={48} color={colors.white} style={{ marginTop: 6, marginLeft: 2 }}></Ionicons>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        {user._id === pageUser._id &&
+                            <TouchableWithoutFeedback onPress={() => console.log("Hi")}>
+                                <View style={styles.add}>
+                                    <Ionicons name="ios-add" size={48} color={colors.white} style={{ marginTop: 6, marginLeft: 2 }}></Ionicons>
+                                </View>
+                            </TouchableWithoutFeedback>}
                     </View>
 
                     <View style={styles.infoContainer}>
-                        <Text style={[{ fontWeight: "200", fontSize: 36 }]}>Name</Text>
-                        <Text style={[{ color: "#AEB5BC", fontSize: 14 }]}>Specialization</Text>
+                        <Text style={[{ fontWeight: "200", fontSize: 36 }]}>{pageUser.name}</Text>
+                        <Text style={[{ color: "#AEB5BC", fontSize: 14 }]}>{pageUser.specialization}</Text>
                     </View>
 
                     <View style={{ margin: 20 }}>
                         <View style={styles.recentItem}>
                             <View style={{ width: 250 }}>
                                 <Text style={[styles.text, { color: "#41444B", fontWeight: "300" }]}>
-                                    Bio
+                                    {pageUser.bio}
                                 </Text>
                             </View>
                         </View>
                     </View>
 
-                    <View style={{ margin: 20, borderColor: colors.light, borderWidth: 2, flexDirection: "row" }}>
+                    <View style={{ margin: 20, borderColor: colors.light, borderWidth: 2, flexDirection: "row", flexWrap: "wrap" }}>
                         <View>
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <MaterialCommunityIcons name="gender-male-female" color={colors.primary} size={20} />
-                                <Text style={{ margin: 10 }}>Male</Text>
-                            </View>
+                            {pageUser.gender &&
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <MaterialCommunityIcons name="gender-male-female" color={colors.primary} size={20} />
+                                    <Text style={{ margin: 10 }}>{pageUser.gender}</Text>
+                                </View>}
 
                             <View style={{ flexDirection: "row", alignItems: "center" }}>
                                 <MaterialCommunityIcons name="email" size={20} color={colors.primary} />
-                                <Text style={{ margin: 10 }}>Hi@gmail.com</Text>
+                                <Text style={{ margin: 10 }}>{pageUser.email}</Text>
                             </View>
                         </View>
-
-                        <View>
+                        {pageUser.location &&
+                            <View>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <Ionicons name="location" size={20} color={colors.primary} />
+                                    <Text style={{ margin: 10 }}>{pageUser.location.country}, {pageUser.location.city}</Text>
+                                </View>
+                            </View>}
+                    </View>
+                    {pageUser.phone && pageUser.phone.length !== 0 &&
+                        <View style={{ marginHorizontal: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
                             <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <Ionicons name="location" size={20} color={colors.primary} />
-                                <Text style={{ margin: 10 }}>Palestine, Nablus</Text>
+                                <MaterialIcons name="phone" size={20} color={colors.primary} />
+                                <Text style={{ margin: 10 }}>Phones</Text>
+                            </View>
+                            {
+                                pageUser.phone.map((v) => <View style={{ flexDirection: "row", alignItems: "center" }} key={v._id}>
+                                    <Text style={{ margin: 10 }}>{v.phoneNum.type} : {v.phoneNum.number}</Text>
+                                </View>
+                                )
+                            }
+                        </View>}
+                    {pageUser.skills && pageUser.skills.length !== 0 &&
+                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <MaterialCommunityIcons name="tools" size={30} color={colors.primary} />
+                                <Text style={{ margin: 10 }}>Skills</Text>
+                            </View>
+                            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                {
+                                    pageUser.skills.map((v, i) =>
+                                        <Badge key={i} size={30} style={{ backgroundColor: colors.primary, margin: 5 }}>{v}</Badge>
+                                    )
+                                }
                             </View>
                         </View>
-                    </View>
-
-                    <View style={{ marginHorizontal: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <MaterialIcons name="phone" size={20} color={colors.primary} />
-                            <Text style={{ margin: 10 }}>Phones</Text>
-                        </View>
-                        {
-                            phones.map((v) => <View style={{ flexDirection: "row", alignItems: "center" }} key={v._id}>
-                                <Text style={{ margin: 10 }}>{v.phoneNum.type} : {v.phoneNum.number}</Text>
+                    }
+                    {pageUser.prevJobs && pageUser.prevJobs.length !== 0 &&
+                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <MaterialIcons name="work" size={30} color={colors.primary} />
+                                <Text style={{ margin: 10 }}>Previous work</Text>
                             </View>
-                            )
-                        }
-                    </View>
 
-                    <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <MaterialCommunityIcons name="tools" size={30} color={colors.primary} />
-                            <Text style={{ margin: 10 }}>Skills</Text>
-                        </View>
-                        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                            {
-                                skills.map((v, i) =>
-                                    <Badge key={i} size={30} style={{ backgroundColor: colors.primary, margin: 5 }}>{v}</Badge>
-                                )
-                            }
-                        </View>
-                    </View>
+                            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                {
+                                    pageUser.prevJobs.map((v, i) =>
+                                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                                <Text style={{ fontWeight: "bold" }}>{v.job.position} at {v.job.companyName}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                                <Ionicons name="time" size={30} color={colors.primary} />
+                                                <Text>{new Date(v.job.duration.start).toDateString()} - {new Date(v.job.duration.end).toDateString()}</Text>
+                                            </View>
 
-                    <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <MaterialIcons name="work" size={30} color={colors.primary} />
-                            <Text style={{ margin: 10 }}>Previous work</Text>
-                        </View>
-                        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                            {
-                                prevJob.map((v, i) =>
-                                    <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                            <Text style={{ fontWeight: "bold" }}>{v.job.position} at {v.job.companyName}</Text>
-                                        </View>
-                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                            <Ionicons name="time" size={30} color={colors.primary} />
-                                            <Text>{v.job.duration.start.toDateString()} - {v.job.duration.end.toDateString()}</Text>
                                         </View>
 
-                                    </View>
+                                    )
+                                }
+                            </View>
 
-                                )
-                            }
-                        </View>
-                    </View>
+                        </View>}
 
-                    <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <MaterialIcons name="feedback" size={30} color={colors.primary} />
-                            <Text style={{ margin: 10 }}>Feedbacks</Text>
-                        </View>
-                        <View>
-                            {
-                                feedbacks.map((v, i) =>
-                                    <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                            <Image style={{ height: 40, width: 40, borderRadius: 20, margin: 5 }} uri={"https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI="} defaultSource={{ uri: v.feedbacker.image ? v.feedbacker.image : "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI=" }} />
-                                            <Text>{v.feedbacker.name}</Text>
+                    {pageUser.feedbacks && pageUser.feedbacks.length !== 0 &&
+                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <MaterialIcons name="feedback" size={30} color={colors.primary} />
+                                <Text style={{ margin: 10 }}>Feedbacks</Text>
+                            </View>
+                            <View>
+                                {
+                                    pageUser.feedbacks.map((v, i) =>
+                                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                                <Image style={{ height: 40, width: 40, borderRadius: 20, margin: 5 }} uri={"https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI="} defaultSource={{ uri: v.feedbacker.image ? v.feedbacker.image : "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI=" }} />
+                                                <Text>{v.feedbacker.name}</Text>
+                                            </View>
+                                            <Rating imageSize={35} startingValue={v.rate} type="custom" ratingColor={colors.secondary} fractions={1} />
+                                            <Text>
+                                                {v.Text}
+                                            </Text>
                                         </View>
-                                        <Rating imageSize={35} startingValue={v.rate} type="custom" ratingColor={colors.secondary} fractions={1} />
-                                        <Text>
-                                            {v.Text}
-                                        </Text>
-                                    </View>
-                                )
-                            }
-                        </View>
-                    </View>
+                                    )
+                                }
+                            </View>
+                        </View>}
 
 
                 </ScrollView>

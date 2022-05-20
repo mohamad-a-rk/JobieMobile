@@ -1,9 +1,39 @@
 import client from "./client";
 
-const endPoint = "/users"
+const endpoint = "/users"
 
-const register = (userInfo) => client.post(endPoint, userInfo);
+const register = (userInfo) => client.post(endpoint, userInfo);
 
-const getUser = (userId) => client.get(endPoint + "/" + userId)
+const signOutAll = () => client.post(endpoint + "/logoutAll")
 
-export default { register, getUser };
+
+
+const getUser = (userId) => client.get(endpoint + "/" + userId)
+
+export const editUser = (user, updatedUser, onUploadProgress) => {
+
+    var updates = {}
+
+    Object.keys(updatedUser).forEach((val) => {
+        if (user[val] !== updatedUser[val])
+            updates[val] = updatedUser[val]
+    })
+
+    return client.patch(endpoint + "/me", updates, {
+        onUploadProgress: (progress) =>
+            onUploadProgress(progress.loaded / progress.total),
+    });
+
+
+}
+
+export const changePassword = (passwords, onUploadProgress) => {
+
+    return client.patch(endpoint + "/me/password", passwords, {
+        onUploadProgress: (progress) =>
+            onUploadProgress(progress.loaded / progress.total),
+    });
+
+}
+
+export default { register, getUser, editUser, changePassword, signOutAll };

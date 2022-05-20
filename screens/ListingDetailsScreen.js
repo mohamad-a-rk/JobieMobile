@@ -21,6 +21,7 @@ import ApplyForm from "../components/ApplyForm";
 import useAuth from "../auth/useAuth";
 import routes from "../navigation/routes";
 import AppButton from "../components/Button";
+import placeholders from "../config/placeholders";
 
 function ListingDetailsScreen({ route, navigation }) {
   const listing = route.params;
@@ -66,8 +67,8 @@ function ListingDetailsScreen({ route, navigation }) {
             <ListItem
               title={listing.owner.name}
               subTitle={listing.owner.specialization}
-              image={listing.owner.image ? listing.owner.image : "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI="}
-            // onPress={() => navigation.navigate(routes.LISTING)}
+              image={listing.owner.image ? listing.owner.image : placeholders.profile_placeholder}
+              onPress={() => navigation.navigate("Account", { screen: routes.PROFILE, params: { _id: listing.owner._id }, initial: false })}
 
             />
           </View>

@@ -12,6 +12,9 @@ export default Object.freeze({
   FORM_DETAIL: "Form Details",
   RESPONSE_DETAILS: "Response Details",
   EDIT_FORM: "Edit Form",
-  PROFILE: "Profile"
+  PROFILE: "Profile",
+  PROFILE_SETTINGS: "Settings",
+  EDIT_PROFILE: "Edit Profile",
+  SECURITY: "Change Password"
 
 });

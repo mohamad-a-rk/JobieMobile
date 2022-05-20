@@ -7,6 +7,9 @@ import ResponseDetailsScreen from "../screens/ResponseDetailsScreen";
 import FormDetailsScreen from "../screens/FormDetailsScreen";
 import EditFormScreen from "../screens/EditFormScreen";
 import ProfileScreen from "../screens/ProfileScreen"
+import ProfileSettingsScreen from "../screens/ProfileSettingsScreen"
+import EditProfileScreen from "../screens/EditProfileScreen";
+import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 
 const Stack = createStackNavigator();
 
@@ -19,6 +22,9 @@ const AccountNavigator = () => (
     <Stack.Screen name="Form Details" component={FormDetailsScreen} />
     <Stack.Screen name="Edit Form" component={EditFormScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="Settings" component={ProfileSettingsScreen} />
+    <Stack.Screen name="Edit Profile" component={EditProfileScreen} />
+    <Stack.Screen name="Change Password" component={ChangePasswordScreen} />
 
   </Stack.Navigator>
 );
