@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import {
     Form,
     FormField,
-    FormPicker as Picker,
     SubmitButton,
 } from "../components/forms";
 import Screen from "../components/Screen";
@@ -68,9 +67,6 @@ function ChangePasswordScreen({ route, navigation }) {
                 }], { cancelable: true })
 
     };
-
-
-
 
     return (
         <Screen style={styles.container}>

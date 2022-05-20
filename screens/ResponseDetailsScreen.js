@@ -110,7 +110,7 @@ function ResponseDetailsScreen({ route, navigation }) {
                             title={response.form.owner.name}
                             subTitle={response.form.owner.specialization}
                             image={response.form.owner.image ? response.form.owner.image : placeholders.profile_placeholder}
-                            onPress={() => navigation.navigate("Account", { screen: routes.PROFILE, params: { _id: response.form.owner._id }, initial: false })}
+                            onPress={() => navigation.navigate(routes.PROFILE, { _id: response.form.owner._id })}
 
                         />}
                     {user.userType === "Business" &&
@@ -118,7 +118,7 @@ function ResponseDetailsScreen({ route, navigation }) {
                             title={response.owner.name}
                             subTitle={response.owner.specialization}
                             image={response.owner.image ? response.owner.image : placeholders.profile_placeholder}
-                            onPress={() => navigation.navigate("Account", { screen: routes.PROFILE, params: { _id: response.owner._id }, initial: false })}
+                            onPress={() => navigation.navigate(routes.PROFILE, { _id: response.owner._id })}
                         />}
                 </View>
             </ScrollView>

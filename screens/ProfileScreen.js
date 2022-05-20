@@ -11,21 +11,38 @@ import useAuth from "../auth/useAuth"
 import useApi from '../hooks/useApi';
 import usersApi from "../api/users"
 import placeholders from '../config/placeholders';
+import routes from '../navigation/routes';
 
 
 
 function ProfileScreen({ route, navigation }) {
     const getProfile = useApi(usersApi.getUser);
+    const getFeedbacks = useApi(usersApi.getFeedbacks)
 
     const { user } = useAuth()
     const [pageUser, setUser] = useState({})
+    const [isOwner, setIsOwner] = useState(false)
+
     useEffect(() => {
-        if (route.params._id === user._id)
+
+        if (route.params._id === user._id) {
+            setIsOwner(true)
+            getFeedbacks.request("me").then((v) => {
+                user.feedbacks = v.data
+            }).catch(error => {
+                console.log(error)
+            })
             return setUser(user)
 
-        const a = ['a', 'b', 'c']
+        }
 
+        setIsOwner(false)
         getProfile.request(route.params._id).then((v) => {
+            getFeedbacks.request(route.params._id).then((feedbacks) => {
+                v.feedbacks = feedbacks.data
+            }).catch(error => {
+                console.log(error)
+            })
             setUser(v.data)
 
         }).catch((r) => {
@@ -45,7 +62,7 @@ function ProfileScreen({ route, navigation }) {
                         <View style={styles.profileImage}>
                             <Image uri={placeholders.profile_placeholder} style={styles.image} resizeMode="center"></Image>
                         </View>
-                        {user._id === pageUser._id &&
+                        {isOwner &&
                             <TouchableWithoutFeedback onPress={() => console.log("Hi")}>
                                 <View style={styles.add}>
                                     <Ionicons name="ios-add" size={48} color={colors.white} style={{ marginTop: 6, marginLeft: 2 }}></Ionicons>
@@ -59,6 +76,11 @@ function ProfileScreen({ route, navigation }) {
                     </View>
 
                     <View style={{ margin: 20 }}>
+                        {isOwner && <TouchableWithoutFeedback onPress={() => navigation.navigate(routes.EDIT_PROFILE)}>
+                            <View style={{ flexDirection: "row-reverse" }}>
+                                <MaterialIcons name="edit" size={30} color={colors.primary} />
+                            </View>
+                        </TouchableWithoutFeedback>}
                         <View style={styles.recentItem}>
                             <View style={{ width: 250 }}>
                                 <Text style={[styles.text, { color: "#41444B", fontWeight: "300" }]}>
@@ -90,59 +112,82 @@ function ProfileScreen({ route, navigation }) {
                             </View>}
                     </View>
                     {pageUser.phone && pageUser.phone.length !== 0 &&
-                        <View style={{ marginHorizontal: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <MaterialIcons name="phone" size={20} color={colors.primary} />
-                                <Text style={{ margin: 10 }}>Phones</Text>
-                            </View>
-                            {
-                                pageUser.phone.map((v) => <View style={{ flexDirection: "row", alignItems: "center" }} key={v._id}>
-                                    <Text style={{ margin: 10 }}>{v.phoneNum.type} : {v.phoneNum.number}</Text>
+                        <>
+
+                            <View style={{ marginHorizontal: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <MaterialIcons name="phone" size={20} color={colors.primary} />
+                                    <Text style={{ margin: 10 }}>Phones</Text>
+                                    {isOwner && <TouchableWithoutFeedback onPress={() => navigation.navigate(routes.CONTACT)}>
+                                        <View style={{ flexDirection: "row-reverse", marginHorizontal: 10 }}>
+                                            <MaterialIcons name="edit" size={30} color={colors.primary} />
+                                        </View>
+                                    </TouchableWithoutFeedback>}
                                 </View>
-                                )
-                            }
-                        </View>}
-                    {pageUser.skills && pageUser.skills.length !== 0 &&
-                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <MaterialCommunityIcons name="tools" size={30} color={colors.primary} />
-                                <Text style={{ margin: 10 }}>Skills</Text>
-                            </View>
-                            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                                 {
-                                    pageUser.skills.map((v, i) =>
-                                        <Badge key={i} size={30} style={{ backgroundColor: colors.primary, margin: 5 }}>{v}</Badge>
+                                    pageUser.phone.map((v) => <View style={{ flexDirection: "row", alignItems: "center" }} key={v._id}>
+                                        <Text style={{ margin: 10 }}>{v.phoneNum.type} : {v.phoneNum.number}</Text>
+                                    </View>
                                     )
                                 }
                             </View>
-                        </View>
+                        </>}
+                    {pageUser.skills && pageUser.skills.length !== 0 &&
+                        <>
+                            {isOwner && <TouchableWithoutFeedback onPress={() => navigation.navigate(routes.EDIT_PROFILE)}>
+                                <View style={{ flexDirection: "row-reverse", margin: 10 }}>
+                                    <MaterialIcons name="edit" size={30} color={colors.primary} />
+                                </View>
+                            </TouchableWithoutFeedback>}
+                            <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <MaterialCommunityIcons name="tools" size={30} color={colors.primary} />
+                                    <Text style={{ margin: 10 }}>Skills</Text>
+                                </View>
+                                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                    {
+                                        pageUser.skills.map((v, i) =>
+                                            <Badge key={i} size={30} style={{ backgroundColor: colors.primary, margin: 5 }}>{v}</Badge>
+                                        )
+                                    }
+                                </View>
+                            </View>
+                        </>
                     }
                     {pageUser.prevJobs && pageUser.prevJobs.length !== 0 &&
-                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <MaterialIcons name="work" size={30} color={colors.primary} />
-                                <Text style={{ margin: 10 }}>Previous work</Text>
-                            </View>
-
-                            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                                {
-                                    pageUser.prevJobs.map((v, i) =>
-                                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
-                                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                                <Text style={{ fontWeight: "bold" }}>{v.job.position} at {v.job.companyName}</Text>
-                                            </View>
-                                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                                <Ionicons name="time" size={30} color={colors.primary} />
-                                                <Text>{new Date(v.job.duration.start).toDateString()} - {new Date(v.job.duration.end).toDateString()}</Text>
-                                            </View>
-
+                        <>
+                            <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <MaterialIcons name="work" size={30} color={colors.primary} />
+                                    <Text style={{ margin: 10 }}>Previous work</Text>
+                                    {isOwner && <TouchableWithoutFeedback onPress={() => navigation.navigate(routes.PREVIOUS_JOBS)}>
+                                        <View style={{ flexDirection: "row-reverse", margin: 10 }}>
+                                            <MaterialIcons name="edit" size={30} color={colors.primary} />
                                         </View>
+                                    </TouchableWithoutFeedback>}
+                                </View>
 
-                                    )
-                                }
+                                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                                    {
+                                        pageUser.prevJobs.map((v, i) =>
+                                            <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                                    <Text style={{ fontWeight: "bold" }}>{v.job.position} at {v.job.companyName}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                                    <Ionicons name="time" size={30} color={colors.primary} />
+                                                    <Text>{new Date(v.job.duration.start).toDateString()} - {new Date(v.job.duration.end).toDateString()}</Text>
+                                                </View>
+
+                                            </View>
+
+                                        )
+                                    }
+                                </View>
+
                             </View>
-
-                        </View>}
+                        </>
+                    }
 
                     {pageUser.feedbacks && pageUser.feedbacks.length !== 0 &&
                         <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
@@ -155,7 +200,7 @@ function ProfileScreen({ route, navigation }) {
                                     pageUser.feedbacks.map((v, i) =>
                                         <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
                                             <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                                <Image style={{ height: 40, width: 40, borderRadius: 20, margin: 5 }} uri={"https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI="} defaultSource={{ uri: v.feedbacker.image ? v.feedbacker.image : "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI=" }} />
+                                                <Image style={{ height: 40, width: 40, borderRadius: 20, margin: 5 }} uri={v.feedbacker.image ? v.feedbacker.image : placeholders.profile_placeholder} />
                                                 <Text>{v.feedbacker.name}</Text>
                                             </View>
                                             <Rating imageSize={35} startingValue={v.rate} type="custom" ratingColor={colors.secondary} fractions={1} />

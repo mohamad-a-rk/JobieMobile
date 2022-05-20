@@ -10,6 +10,8 @@ import ProfileScreen from "../screens/ProfileScreen"
 import ProfileSettingsScreen from "../screens/ProfileSettingsScreen"
 import EditProfileScreen from "../screens/EditProfileScreen";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen";
+import PhonesScreen from "../screens/PhonesScreen";
+import PreviousJobsScreen from "../screens/PreviousJobsScreen";
 
 const Stack = createStackNavigator();
 
@@ -25,6 +27,8 @@ const AccountNavigator = () => (
     <Stack.Screen name="Settings" component={ProfileSettingsScreen} />
     <Stack.Screen name="Edit Profile" component={EditProfileScreen} />
     <Stack.Screen name="Change Password" component={ChangePasswordScreen} />
+    <Stack.Screen name="Change phones" component={PhonesScreen} />
+    <Stack.Screen name="Previous Jobs" component={PreviousJobsScreen} />
 
   </Stack.Navigator>
 );
