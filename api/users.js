@@ -14,6 +14,8 @@ const getUser = (userId) => client.get(endpoint + "/" + userId)
 
 const getFeedbacks = (userId) => client.get(feedbacks + "/" + userId)
 
+const searchUser = (extention) => client.get(endpoint + extention)
+
 export const editUser = (user, updatedUser, onUploadProgress) => {
 
     var updates = {}
@@ -65,4 +67,4 @@ export const uplodeImage = (image, onUploadProgress) => {
 
 }
 
-export default { register, getUser, editUser, changePassword, signOutAll, updateData, getFeedbacks, uplodeImage };
+export default { register, getUser, editUser, changePassword, signOutAll, updateData, getFeedbacks, uplodeImage, searchUser };

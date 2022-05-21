@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 
 import ActivityIndicator from "../components/ActivityIndicator";
 import Button from "../components/Button";
@@ -11,10 +11,14 @@ import Screen from "../components/Screen";
 import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
 import placeholders from "../config/placeholders";
+import AppTextInput from "../components/TextInput";
+import { TouchableWithoutFeedback } from "react-native";
+import useAuth from "../auth/useAuth";
 
 
 function ListingsScreen({ navigation }) {
   const getListingsApi = useApi(listingsApi.getListings);
+  const { user } = useAuth()
 
   useEffect(() => {
     getListingsApi.request();
@@ -30,6 +34,16 @@ function ListingsScreen({ navigation }) {
             <Button title="Retry" onPress={getListingsApi.request} />
           </>
         )}
+
+
+        {user.userType === "Business" &&
+          <TouchableWithoutFeedback onPress={() => navigation.navigate("Search/Add", { screen: routes.SEARCH })}>
+            <View>
+              <AppTextInput editable={false} icon={"account-search"} placeholder={"Search"} />
+            </View>
+          </TouchableWithoutFeedback>
+        }
+
         <FlatList
           data={getListingsApi.data}
           keyExtractor={(listing) => listing._id}

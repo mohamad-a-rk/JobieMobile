@@ -11,6 +11,7 @@ import {
 } from "../components/forms";
 import authApi from "../api/auth";
 import useAuth from "../auth/useAuth";
+import colors from "../config/colors";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -32,7 +33,7 @@ function LoginScreen(props) {
 
   return (
     <Screen style={styles.container}>
-      <Image style={styles.logo} source={require("../assets/logo-job.png")} />
+      <Image style={styles.logo} source={require("../assets/logo.png")} />
 
       <Form
         initialValues={{ email: "", password: "" }}
@@ -70,10 +71,11 @@ function LoginScreen(props) {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+
   },
   logo: {
     width: 80,
-    height: 80,
+    height: 100,
     alignSelf: "center",
     marginTop: 50,
     marginBottom: 20,

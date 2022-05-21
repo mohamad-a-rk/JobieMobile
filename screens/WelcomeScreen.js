@@ -18,7 +18,6 @@ function WelcomeScreen({ navigation }) {
         >
             <View style={styles.logoContainer}>
                 <Image style={styles.logo} source={require("../assets/logo-job.png")} />
-                <AppText style={styles.tagline}>Your Consultant to find a Job</AppText>
             </View>
             <View style={styles.buttonsContainer}>
                 <Button
@@ -36,7 +35,7 @@ function WelcomeScreen({ navigation }) {
                     }}
                     style={{ justifyContent: "center", alignItems: "center" }}
                 >
-                    <AppText style={{ color: colors.medium }} >
+                    <AppText style={{ color: colors.light }} >
                         Skip for now
                     </AppText>
                 </TouchableOpacity>
@@ -56,19 +55,14 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     logo: {
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 175,
     },
     logoContainer: {
         position: "absolute",
-        top: 70,
+        top: 100,
         alignItems: "center",
-    },
-    tagline: {
-        fontSize: 25,
-        fontWeight: "600",
-        paddingVertical: 20,
-    },
+    }
 });
 
 export default WelcomeScreen;
