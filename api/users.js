@@ -49,4 +49,20 @@ export const updateData = (updates, onUploadProgress) => {
 
 }
 
-export default { register, getUser, editUser, changePassword, signOutAll, updateData, getFeedbacks };
+export const uplodeImage = (image, onUploadProgress) => {
+    const data = new FormData();
+    data.append("avatar", {
+        name: "image" + image,
+        type: "image/png",
+        uri: image,
+    })
+
+    return client.post(endpoint + "/me/avatar", data, {
+        onUploadProgress: (progress) =>
+            onUploadProgress(progress.loaded / progress.total),
+    });
+
+
+}
+
+export default { register, getUser, editUser, changePassword, signOutAll, updateData, getFeedbacks, uplodeImage };

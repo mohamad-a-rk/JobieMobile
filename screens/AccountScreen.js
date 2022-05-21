@@ -44,7 +44,7 @@ function AccountScreen({ navigation }) {
         <ListItem
           title={user.name}
           subTitle={user.email}
-          image={user.image ? user.image : placeholders.profile_placeholder}
+          image={user.image ? "data:image/png;base64," + user.image : placeholders.profile_placeholder}
           onPress={() => navigation.navigate(routes.PROFILE, { _id: user._id })}
         />
       </View>

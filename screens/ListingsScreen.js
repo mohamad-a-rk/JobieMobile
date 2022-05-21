@@ -37,7 +37,7 @@ function ListingsScreen({ navigation }) {
             <Card
               title={item.title}
               subTitle={(item.owner ? item.owner.name : "Some business ") + " offers a " + (item.jobType ? item.jobType : "job ") + " job at " + (item.location ? item.location.city : "some place")}
-              imageUrl={item.owner.image ? item.owner.image : placeholders.profile_placeholder}
+              imageUrl={item.owner.image ? "data:image/png;base64," + item.owner.image : placeholders.profile_placeholder}
               onPress={() => {
                 console.log(item)
                 navigation.navigate(routes.LISTING_DETAILS, item)

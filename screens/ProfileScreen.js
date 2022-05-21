@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableWithoutFeedback, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { View, TouchableWithoutFeedback, SafeAreaView, ScrollView, StyleSheet, Image } from 'react-native';
 import Screen from '../components/Screen';
 import { MaterialIcons, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import colors from '../config/colors';
 import Text from "../components/Text"
-import { Badge, DefaultTheme } from 'react-native-paper';
+import { Badge } from 'react-native-paper';
 import { Rating } from 'react-native-ratings';
-import { Image } from "react-native-expo-image-cache";
 import useAuth from "../auth/useAuth"
 import useApi from '../hooks/useApi';
 import usersApi from "../api/users"
 import placeholders from '../config/placeholders';
 import routes from '../navigation/routes';
+import * as ImagePicker from "expo-image-picker";
+import UploadScreen from './UploadScreen';
+
 
 
 
@@ -22,27 +24,34 @@ function ProfileScreen({ route, navigation }) {
     const { user } = useAuth()
     const [pageUser, setUser] = useState({})
     const [isOwner, setIsOwner] = useState(false)
+    const [uploadVisible, setUploadVisible] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
 
         if (route.params._id === user._id) {
             setIsOwner(true)
-            getFeedbacks.request("me").then((v) => {
-                user.feedbacks = v.data
-            }).catch(error => {
-                console.log(error)
-            })
+            console.log('====================================');
+            console.log(user);
+            console.log('====================================');
+            if (user.userType === "freelancer")
+                getFeedbacks.request("me").then((v) => {
+                    user.feedbacks = v.data
+                }).catch(error => {
+                    console.log(error)
+                })
             return setUser(user)
 
         }
 
         setIsOwner(false)
         getProfile.request(route.params._id).then((v) => {
-            getFeedbacks.request(route.params._id).then((feedbacks) => {
-                v.feedbacks = feedbacks.data
-            }).catch(error => {
-                console.log(error)
-            })
+            if (v.data.userType === "freelancer")
+                getFeedbacks.request(route.params._id).then((feedbacks) => {
+                    v.feedbacks = feedbacks.data
+                }).catch(error => {
+                    console.log(error)
+                })
             setUser(v.data)
 
         }).catch((r) => {
@@ -50,9 +59,43 @@ function ProfileScreen({ route, navigation }) {
         })
     }, [route.params._id])
 
+    useEffect(() => {
+        requestPermission();
+    }, []);
+
+    const requestPermission = async () => {
+        const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!granted) alert("You need to enable permission to access the library.");
+    };
+
+    const onChangeImage = async (image) => {
+        var res = await usersApi.uplodeImage(image, (progress) => setProgress(progress))
+        if (!res.ok)
+            console.log(res);
+    }
+
+
+    const selectImage = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 0.5,
+            });
+            if (!result.cancelled) onChangeImage(result.uri);
+
+        } catch (error) {
+            console.log("Error reading an image", error);
+        }
+    };
+
     return (
         <Screen>
             <SafeAreaView style={styles.container}>
+                <UploadScreen
+                    onDone={() => setUploadVisible(false)}
+                    progress={progress}
+                    visible={uploadVisible}
+                />
 
                 <View style={styles.titleBar} />
 
@@ -60,10 +103,10 @@ function ProfileScreen({ route, navigation }) {
 
                     <View style={{ alignSelf: "center" }}>
                         <View style={styles.profileImage}>
-                            <Image uri={placeholders.profile_placeholder} style={styles.image} resizeMode="center"></Image>
+                            <Image source={{ uri: "data:image/png;base64," + pageUser.image }} style={styles.image} resizeMode="center"></Image>
                         </View>
                         {isOwner &&
-                            <TouchableWithoutFeedback onPress={() => console.log("Hi")}>
+                            <TouchableWithoutFeedback onPress={() => selectImage()}>
                                 <View style={styles.add}>
                                     <Ionicons name="ios-add" size={48} color={colors.white} style={{ marginTop: 6, marginLeft: 2 }}></Ionicons>
                                 </View>
@@ -228,9 +271,7 @@ const styles = StyleSheet.create({
         color: "#52575D"
     },
     image: {
-        flex: 1,
-        height: undefined,
-        width: undefined
+        flex: 1
     },
     titleBar: {
         flexDirection: "row",
