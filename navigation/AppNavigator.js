@@ -8,6 +8,7 @@ import AddFormScreen from "../screens/AddFormScreen"
 import NewListingButton from "./NewFormButton";
 import routes from "./routes";
 import useAuth from "../auth/useAuth";
+import SearchNavigator from "./SearchNavigator";
 // import navigation from "./rootNavigation";
 // import useNotifications from "../hooks/useNotifications";
 
@@ -29,12 +30,12 @@ const AppNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Add Form Screen"
-        component={AddFormScreen}
+        name="Search/Add"
+        component={SearchNavigator}
         options={({ navigation }) => ({
           tabBarButton: () => (
             <NewListingButton
-              onPress={() => { user.userType === "Business" ? navigation.navigate(routes.ADD_FORM_SCREEN) : console.log("Hi") }}
+              onPress={() => { user.userType === "Business" ? navigation.navigate("Search/Add", { screen: routes.ADD_FORM_SCREEN }) : navigation.navigate("Search/Add", { screen: routes.SEARCH }) }}
               name={user.userType === "Business" ? "plus-circle" : "account-search"}
 
             />

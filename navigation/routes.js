@@ -17,6 +17,7 @@ export default Object.freeze({
   EDIT_PROFILE: "Edit Profile",
   SECURITY: "Change Password",
   CONTACT: "Change phones",
-  PREVIOUS_JOBS: "Previous Jobs"
+  PREVIOUS_JOBS: "Previous Jobs",
+  SEARCH: "Search"
 
 });
