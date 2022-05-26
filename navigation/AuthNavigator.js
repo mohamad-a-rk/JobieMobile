@@ -10,7 +10,7 @@ import AppNavigator from "./AppNavigator";
 const Stack = createStackNavigator();
 
 const AuthNavigator = () => (
-  <Stack.Navigator>
+  <Stack.Navigator initialRouteName="Welcome">
     <Stack.Screen
       name="Welcome"
       component={WelcomeScreen}

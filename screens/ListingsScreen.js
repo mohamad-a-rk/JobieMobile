@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
+import UsersApi from "../api/users"
 import ActivityIndicator from "../components/ActivityIndicator";
 import Button from "../components/Button";
 import Card from "../components/Card";
@@ -17,11 +18,17 @@ import useAuth from "../auth/useAuth";
 
 
 function ListingsScreen({ navigation }) {
+  const getUsersApi = useApi(UsersApi.searchUser);
   const getListingsApi = useApi(listingsApi.getListings);
   const { user } = useAuth()
 
   useEffect(() => {
-    getListingsApi.request();
+
+    if(user.userType === "Business")
+      getUsersApi.request("?userType=FreeLancer")
+    else
+      getListingsApi.request();
+
   }, []);
 
   return (
@@ -44,6 +51,8 @@ function ListingsScreen({ navigation }) {
           </TouchableWithoutFeedback>
         }
 
+        {
+           user.userType !== "Business" &&
         <FlatList
           data={getListingsApi.data}
           keyExtractor={(listing) => listing._id}
@@ -59,6 +68,24 @@ function ListingsScreen({ navigation }) {
             />
           )}
         />
+            }
+
+{
+                user.userType === "Business" &&
+                <FlatList
+                    data={getUsersApi.data}
+                    keyExtractor={(user) => user._id}
+                    renderItem={({ item }) => (
+                        <Card
+                            title={item.name}
+                            subTitle={item.specialization}
+                            imageUrl={item.image ? item.image : placeholders.profile_placeholder}
+                            onPress={() => navigation.navigate("Account", { screen: routes.PROFILE, params: { _id: item._id } })}
+                        />
+                    )}
+                />
+
+            }
       </Screen>
     </>
   );

@@ -19,7 +19,7 @@ const AppNavigator = () => {
   const { user } = useAuth()
 
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator screenOptions={{ headerShown: false }} initialRouteName={"Feed"}>
       <Tab.Screen
         name="Feed"
         component={FeedNavigator}

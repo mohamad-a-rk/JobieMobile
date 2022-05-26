@@ -6,7 +6,7 @@ import SearchScreen from "../screens/SearchScreen"
 const Stack = createStackNavigator();
 
 const SearchNavigator = () => (
-    <Stack.Navigator presentation="modal" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Search" presentation="modal" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Search" component={SearchScreen} />
         <Stack.Screen name="Add Form Screen" component={AddFormScreen} />
     </Stack.Navigator>

@@ -8,7 +8,7 @@ import SearchScreen from "../screens/SearchScreen"
 const Stack = createStackNavigator();
 
 const FeedNavigator = () => (
-  <Stack.Navigator presentation="modal" screenOptions={{ headerShown: false }}>
+  <Stack.Navigator initialRouteName="Listings" presentation="modal" screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Listings" component={ListingsScreen} />
     <Stack.Screen name="ListingDetails" component={ListingDetailsScreen} />
     <Stack.Screen name="ApplyForm" component={ApplyFormScreen} />

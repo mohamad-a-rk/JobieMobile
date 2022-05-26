@@ -16,7 +16,7 @@ import PreviousJobsScreen from "../screens/PreviousJobsScreen";
 const Stack = createStackNavigator();
 
 const AccountNavigator = () => (
-  <Stack.Navigator>
+  <Stack.Navigator >
     <Stack.Screen name="Account" component={AccountScreen} />
     <Stack.Screen name="My Forms" component={FormsScreen} />
     <Stack.Screen name="My Responses" component={ResponsesScreen} />

@@ -80,7 +80,7 @@ function ApplyFormScreen({ route, navigation }) {
         <Screen style={styles.container}>
             <AppText style={{ fontWeight: "bold" }}>{listing.title} at/for {listing.owner.name.charAt(0).toUpperCase() + listing.owner.name.slice(1)}</AppText>
             <ScrollView>
-                <KeyboardAvoidingView behavior="position"
+                <KeyboardAvoidingView behavior="height"
                     keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
                 >
                     <Form

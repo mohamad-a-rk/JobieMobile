@@ -28,6 +28,11 @@ export const addForm = (listing, onUploadProgress) => {
   //     uri: image,
   //   })
   // );
+  listing.location = {country: listing.country , city: listing.city}
+  console.log(listing.location);
+  
+  delete listing.country
+  delete listing.city
 
   return client.post(endpoint, listing, {
     onUploadProgress: (progress) =>

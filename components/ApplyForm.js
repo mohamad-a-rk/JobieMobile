@@ -18,8 +18,7 @@ function ApplyForm({ listing, user, onPress }) {
     const result = await responseApi.send(response, listing._id);
 
     if (!result.ok) {
-      console.log("Error", result);
-      return Alert.alert("Error", "Could not send the message to the seller.");
+      return Alert.alert("Error", "This Form is already applied.");
     }
     resetForm();
 

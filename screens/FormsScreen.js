@@ -59,7 +59,7 @@ function FormsScreen({ navigation }) {
             <>
               <ListItem
                 title={item.title}
-                subTitle={(item.owner ? item.owner.name : "Some business ") + " offers a " + (item.jobType ? item.jobType : "job ") + " job at " + (item.location ? item.location.city : "some place")}
+                subTitle={(item.owner ? item.owner.name : "Some business ") + " offers a " + (item.jobType ? item.jobType : "job ") + " job at " + (item.location ? item.location.city +", "+ item.location.country : "some place")}
                 onPress={() => navigation.navigate(routes.FORM_DETAIL, item)}
                 renderRightActions={() => <ListItemDeleteAction
                   onPress={

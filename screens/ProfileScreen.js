@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableWithoutFeedback, SafeAreaView, ScrollView, StyleSheet, Image } from 'react-native';
+import { View, TouchableWithoutFeedback, SafeAreaView, ScrollView, StyleSheet, Image, Alert } from 'react-native';
 import Screen from '../components/Screen';
 import { MaterialIcons, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import colors from '../config/colors';
@@ -13,6 +13,9 @@ import placeholders from '../config/placeholders';
 import routes from '../navigation/routes';
 import * as ImagePicker from "expo-image-picker";
 import UploadScreen from './UploadScreen';
+import TextInput from "../components/TextInput"
+import AppButton from '../components/Button';
+import FeedbacksApi from "../api/feedbacks"
 
 
 
@@ -26,17 +29,16 @@ function ProfileScreen({ route, navigation }) {
     const [isOwner, setIsOwner] = useState(false)
     const [uploadVisible, setUploadVisible] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [rate, setRate] = useState(0);
+    const [feedback, setFeedback] = useState("");
 
     useEffect(() => {
 
         if (route.params._id === user._id) {
             setIsOwner(true)
-            console.log('====================================');
-            console.log(user);
-            console.log('====================================');
-            if (user.userType === "freelancer")
+            if (user.userType === "FreeLancers")
                 getFeedbacks.request("me").then((v) => {
-                    user.feedbacks = v.data
+                    user.feedbacks = v.data? v.data : []
                 }).catch(error => {
                     console.log(error)
                 })
@@ -46,18 +48,19 @@ function ProfileScreen({ route, navigation }) {
 
         setIsOwner(false)
         getProfile.request(route.params._id).then((v) => {
-            if (v.data.userType === "freelancer")
+            if (v.data.userType === "FreeLancer"){
                 getFeedbacks.request(route.params._id).then((feedbacks) => {
-                    v.feedbacks = feedbacks.data
+                    v.data.feedbacks = feedbacks.data
+                    setUser({feedbacks, ...v.data})
                 }).catch(error => {
                     console.log(error)
-                })
-            setUser(v.data)
+                })}
 
         }).catch((r) => {
             console.log("Error:", r)
         })
     }, [route.params._id])
+
 
     useEffect(() => {
         requestPermission();
@@ -87,6 +90,24 @@ function ProfileScreen({ route, navigation }) {
             console.log("Error reading an image", error);
         }
     };
+
+    const handleFeedback = async () =>{
+        if(rate == 0 || feedback == ""){
+            console.log(rate, feedback)
+            return Alert.alert("Error", "Please fill the feedback and the rate value")
+        }
+        var myFeedback = {feedbacker: user._id, freelancer: pageUser._id, Text: feedback, rate}
+        console.log(myFeedback)
+        
+        FeedbacksApi.postFeedback(myFeedback).then((v) =>{
+            pageUser.feedbacks = [myFeedback, ...pageUser.feedbacks]
+            setUser({...pageUser})
+        }).catch((m) =>{
+            console.log("error",m);
+        })
+
+
+    }
 
     return (
         <Screen>
@@ -231,13 +252,29 @@ function ProfileScreen({ route, navigation }) {
                             </View>
                         </>
                     }
-
-                    {pageUser.feedbacks && pageUser.feedbacks.length !== 0 &&
+                    <View>
+                    { pageUser.userType === "FreeLancer" &&
                         <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
                             <View style={{ flexDirection: "row", alignItems: "center" }}>
                                 <MaterialIcons name="feedback" size={30} color={colors.primary} />
                                 <Text style={{ margin: 10 }}>Feedbacks</Text>
                             </View>
+                        </View>
+                    }
+                    </View>
+                    {
+                        pageUser.userType === "FreeLancer" && user.userType === "Business" &&
+                                        <View style={{ margin: 20, borderColor: colors.light, borderWidth: 1, borderRadius: 15 }}>
+                                            
+                                            <Rating onFinishRating ={(rate) => setRate(rate)} imageSize={35} jumpSize={100}  type="custom" ratingColor={colors.secondary} fractions={0} />
+                                            <TextInput placeholder={"Feedback"} onChangeText = {(text) => setFeedback(text)} />
+                                            <AppButton title={"Rate Now !"} onPress={handleFeedback} />
+                                        </View>
+                                        
+                    }
+
+                    {pageUser.feedbacks && pageUser.feedbacks.length !== 0 &&
+                            
                             <View>
                                 {
                                     pageUser.feedbacks.map((v, i) =>
@@ -246,15 +283,15 @@ function ProfileScreen({ route, navigation }) {
                                                 <Image style={{ height: 40, width: 40, borderRadius: 20, margin: 5 }} uri={v.feedbacker.image ? v.feedbacker.image : placeholders.profile_placeholder} />
                                                 <Text>{v.feedbacker.name}</Text>
                                             </View>
-                                            <Rating imageSize={35} startingValue={v.rate} type="custom" ratingColor={colors.secondary} fractions={1} />
-                                            <Text>
+                                            <Rating readonly={true} imageSize={35}  startingValue={v.rate} type="custom" ratingColor={colors.secondary} fractions={1} />
+                                            <Text disabled={true}>
                                                 {v.Text}
                                             </Text>
                                         </View>
                                     )
                                 }
                             </View>
-                        </View>}
+                        }
 
 
                 </ScrollView>

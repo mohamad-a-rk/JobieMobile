@@ -13,8 +13,9 @@ const getMyResponses = () => {
   return client.get(endpoint + "/me")
 }
 
+
 export default {
   send,
   getFormResponses,
-  getMyResponses
+  getMyResponses,
 };

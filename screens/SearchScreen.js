@@ -23,7 +23,7 @@ function SearchScreen({ navigation }) {
     const [filter, setFilter] = useState([
         { label: 'Application', value: 'app' },
         { label: 'Business', value: 'b' },
-        { label: 'Freelancer', value: 'f' },
+        { label: 'FreeLancer', value: 'f' },
     ])
 
 
@@ -99,6 +99,7 @@ function SearchScreen({ navigation }) {
                     filter.map((v, i) =>
                         <ListItem title={v.label} onPress={() => {
                             setForOpen(false)
+                            console.log(v.label)
                             setFor(v.label)
                         }} >
 

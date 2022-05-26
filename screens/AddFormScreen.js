@@ -60,7 +60,9 @@ function AddFormScreen(navigation) {
 
         if (!result.ok) {
             setUploadVisible(false);
+            console.log(result.data)
             return alert("Could not post the form");
+
         }
 
         resetForm();

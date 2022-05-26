@@ -11,11 +11,15 @@ import Screen from "../components/Screen";
 import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
 import useAuth from "../auth/useAuth";
+import placeholders from "../config/placeholders";
+import usersApi from "../api/users"
+
 
 
 function ResponsesScreen({ route, navigation }) {
     const form = route.params
     const getResponsesApi = useApi(!form ? responsesApi.getMyResponses : responsesApi.getFormResponses);
+    const getProfile = useApi(usersApi.getUser);
 
     useEffect(() => {
         const getData = async () => {
@@ -50,7 +54,7 @@ function ResponsesScreen({ route, navigation }) {
                                 console.log(item)
                                 navigation.navigate(routes.RESPONSE_DETAILS, item)
                             }}
-                            imageUrl={form ? (item.owner.image ? item.owner.image : "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744004?k=20&m=1016744004&s=612x612&w=0&h=Z4W8y-2T0W-mQM-Sxt41CGS16bByUo4efOIJuyNBHgI=") : null}
+                            imageUrl={ form ? ( item.owner && item.owner.image ? item.owner.image : placeholders.profile_placeholder) : null}
                         />
 
                     )}

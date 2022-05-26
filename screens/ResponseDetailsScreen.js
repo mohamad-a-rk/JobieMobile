@@ -113,7 +113,7 @@ function ResponseDetailsScreen({ route, navigation }) {
                             onPress={() => navigation.navigate(routes.PROFILE, { _id: response.form.owner._id })}
 
                         />}
-                    {user.userType === "Business" &&
+                    {user.userType === "Business" && response.owner &&
                         <ListItem
                             title={response.owner.name}
                             subTitle={response.owner.specialization}
